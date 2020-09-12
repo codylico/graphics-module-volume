@@ -213,8 +213,10 @@ void init(){
     glEnableVertexAttribArray( vNormal );
 
     glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
-    glVertexAttribPointer( vColor, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(static_cast<size_t>(vertices_bytes)) );
-    glVertexAttribPointer( vNormal, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(static_cast<size_t>(vertices_bytes + colors_bytes)) );
+    if (colors_bytes > 0)
+      glVertexAttribPointer( vColor, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(static_cast<size_t>(vertices_bytes)) );
+    if (normals_bytes > 0)
+      glVertexAttribPointer( vNormal, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(static_cast<size_t>(vertices_bytes + colors_bytes)) );
 
   }
   
