@@ -1,5 +1,6 @@
 
 #include "readvoxel.h"
+#include "u8names.h"
 #include <qbvoxel/parse.h>
 #include <cstdio>
 #include <cerrno>
@@ -91,7 +92,17 @@ voxelgrid_decode(std::vector<unsigned char>& image,
   unsigned int& width, unsigned int& height, unsigned int &depth,
   const char* path)
 {
+#ifdef _WIN32
+  std::FILE* fp ;
+  /* */{
+    std::wstring wcpath;
+    if (u8names_towc(path, wcpath) != 0)
+      return 9/* other io */;
+    fp = _wfopen(wcpath.c_str(), L"rb");
+  }
+#else
   std::FILE* fp = std::fopen(path, "rb");
+#endif //_WIN32
   if (fp != NULL) {
     unsigned int error_code = 0;
     unsigned char buf[256];
