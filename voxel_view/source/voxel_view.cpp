@@ -202,17 +202,24 @@ void init(){
     
     glBufferData( GL_ARRAY_BUFFER, vertices_bytes + colors_bytes + normals_bytes, NULL, GL_STATIC_DRAW );
     unsigned int offset = 0;
-    glBufferSubData( GL_ARRAY_BUFFER, offset, vertices_bytes, &voxelgrid[i].vertices[0] );
+    if (vertices_bytes > 0) {
+      glBufferSubData( GL_ARRAY_BUFFER, offset, vertices_bytes, &voxelgrid[i].vertices[0] );
+    }
     offset += vertices_bytes;
-    glBufferSubData( GL_ARRAY_BUFFER, offset, colors_bytes,  &voxelgrid[i].colors[0] );
+    if (colors_bytes > 0) {
+      glBufferSubData( GL_ARRAY_BUFFER, offset, colors_bytes,  &voxelgrid[i].colors[0] );
+    }
     offset += colors_bytes;
-    glBufferSubData( GL_ARRAY_BUFFER, offset, normals_bytes,  &voxelgrid[i].normals[0] );
+    if (normals_bytes > 0) {
+      glBufferSubData( GL_ARRAY_BUFFER, offset, normals_bytes,  &voxelgrid[i].normals[0] );
+    }
     
     glEnableVertexAttribArray( vColor );
     glEnableVertexAttribArray( vPosition );
     glEnableVertexAttribArray( vNormal );
 
-    glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
+    if (vertices_bytes > 0)
+      glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
     if (colors_bytes > 0)
       glVertexAttribPointer( vColor, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(static_cast<size_t>(vertices_bytes)) );
     if (normals_bytes > 0)
