@@ -194,6 +194,24 @@ void init(){
   for(unsigned int i=0; i < _TOTAL_IMAGES; i++){
     voxelgrid.push_back((source_path + files[i]).c_str());
 
+    // match normal array size of vertices
+    if (voxelgrid[i].normals.size() < voxelgrid[i].vertices.size()) {
+      std::size_t oldsize = voxelgrid[i].normals.size();
+      std::size_t newsize = voxelgrid[i].vertices.size();
+      voxelgrid[i].normals.resize(newsize);
+      for (std::size_t j = oldsize; j < newsize; ++j) {
+        voxelgrid[i].normals[j] = vec3(0.f, -1.f, 0.f);
+      }
+    }
+    if (voxelgrid[i].colors.size() < voxelgrid[i].vertices.size()) {
+      std::size_t oldsize = voxelgrid[i].colors.size();
+      std::size_t newsize = voxelgrid[i].vertices.size();
+      voxelgrid[i].colors.resize(newsize);
+      for (std::size_t j = oldsize; j < newsize; ++j) {
+        voxelgrid[i].colors[j] = vec3(0.f, 0.f, 0.f);
+      }
+    }
+
     glBindVertexArray( vao[i] );
     glBindBuffer( GL_ARRAY_BUFFER, buffer[i] );
     unsigned int vertices_bytes = voxelgrid[i].vertices.size()*sizeof(vec4);
@@ -202,17 +220,24 @@ void init(){
     
     glBufferData( GL_ARRAY_BUFFER, vertices_bytes + colors_bytes + normals_bytes, NULL, GL_STATIC_DRAW );
     unsigned int offset = 0;
-    glBufferSubData( GL_ARRAY_BUFFER, offset, vertices_bytes, &voxelgrid[i].vertices[0] );
+    if (vertices_bytes > 0) {
+      glBufferSubData( GL_ARRAY_BUFFER, offset, vertices_bytes, &voxelgrid[i].vertices[0] );
+    }
     offset += vertices_bytes;
-    glBufferSubData( GL_ARRAY_BUFFER, offset, colors_bytes,  &voxelgrid[i].colors[0] );
+    if (colors_bytes > 0) {
+      glBufferSubData( GL_ARRAY_BUFFER, offset, colors_bytes,  &voxelgrid[i].colors[0] );
+    }
     offset += colors_bytes;
-    glBufferSubData( GL_ARRAY_BUFFER, offset, normals_bytes,  &voxelgrid[i].normals[0] );
+    if (normals_bytes > 0) {
+      glBufferSubData( GL_ARRAY_BUFFER, offset, normals_bytes,  &voxelgrid[i].normals[0] );
+    }
     
     glEnableVertexAttribArray( vColor );
     glEnableVertexAttribArray( vPosition );
     glEnableVertexAttribArray( vNormal );
 
-    glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
+    if (vertices_bytes > 0)
+      glVertexAttribPointer( vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0) );
     if (colors_bytes > 0)
       glVertexAttribPointer( vColor, 3, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(static_cast<size_t>(vertices_bytes)) );
     if (normals_bytes > 0)

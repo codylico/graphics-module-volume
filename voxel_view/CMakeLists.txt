@@ -42,6 +42,8 @@ add_executable(voxel_view WIN32 MACOSX_BUNDLE
 	source/common/Trackball.cpp
 	source/common/Trackball.h
 	source/common/vec.h
+	source/common/u8names.h
+	source/common/u8names.cpp
 	shaders/fshader.glsl
     shaders/vshader.glsl)
 
