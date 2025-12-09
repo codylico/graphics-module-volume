@@ -26,7 +26,7 @@ int voxelgrid_cb_write_voxel
 
 
 int voxelgrid_cb_resize(void* , unsigned long int n) {
-  return n == 1 ? QBVoxel_Ok : /*matrix count*/10;
+  return n == 1 ? QBVoxel_Ok : QBVoxel_ErrMatrixCount;
 }
 
 int voxelgrid_cb_set_matrix
@@ -144,9 +144,10 @@ char const* voxelgrid_error_text(unsigned err) {
   case QBVoxel_ErrCompress: return "Unsupported compression method";
   case QBVoxel_ErrOutOfRange: return "Out of range";
   case QBVoxel_ErrMemory: return "Out of memory";
-  case 8: return "File not found";
-  case 9: return "Input/output error";
-  case 10: return "Unsupported matrix count";
+  case QBVoxel_ErrIONotFound: return "File not found";
+  case QBVoxel_ErrIOGeneric: return "Input/output error";
+  case QBVoxel_ErrMatrixCount: return "Unsupported matrix count";
+  case QBVoxel_ErrOverrun: return "A run-length encoding overran its bounds";
   default: return "Unknown error";
   }
 }
