@@ -70,10 +70,18 @@ enum qbvoxel_error {
   QBVoxel_ErrIOGeneric = 9,
   /**
    * @brief Matrix count not supported.
+   * @note Emitted by the generator when requesting to export more
+   *   than UINT32_MAX matrices.
    * @note Useful in applications expecting a single matrix per file.
-   * @note This code not emitted directly by this library.
+   * @note This code not emitted by the parser.
    */
   QBVoxel_ErrMatrixCount = 10,
+  /**
+   * @brief A run-length encoding overran its bounds.
+   * @note Emitted by a parser when a run length code indicates
+   *   voxels beyond the end of a slice.
+   */
+  QBVoxel_ErrOverrun = 11,
   /**
    * @brief First error code guaranteed unused by this library.
    * @note This code not emitted directly by this library.
